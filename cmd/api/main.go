@@ -5,11 +5,12 @@ import (
 	"log"
 )
 
-func main(){
+func main() {
+	// setting up connection with db
 	db, err := sql.Open("sqlite3", "./data.db")
-	if err!= nil {
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
+	defer db.Close() // closes connection
 }
