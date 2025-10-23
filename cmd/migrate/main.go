@@ -38,6 +38,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// migrate changes in database
 	switch direction {
 	case "up":
 		if err := m.Up(); err != nil && err != migrate.ErrNoChange {

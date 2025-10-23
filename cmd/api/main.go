@@ -10,9 +10,9 @@ import (
 )
 
 type application struct {
-	Port   int
-	Secret string
-	Models database.Models
+	port   int
+	secret string
+	models database.Models
 }
 
 func main() {
@@ -24,12 +24,12 @@ func main() {
 
 	defer db.Close() // closes connection
 
-	models := database.NewModels(db)
+	m := database.NewModels(db)
 
 	app := &application{
-		Port:   env.GetEnvInt("LOCALHOST:", 8080),
-		Secret: env.GetenvString("SECRET", "yolo"),
-		Models: models,
+		port:   env.GetEnvInt("LOCALHOST:", 8080),
+		secret: env.GetenvString("secret", "yolo"),
+		models: m,
 	}
 
 	if err := serve(app); err != nil {
