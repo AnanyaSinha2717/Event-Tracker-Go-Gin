@@ -110,13 +110,13 @@ func (app *application) deleteEvent(c *gin.Context) {
 
 // add attendee to event
 func (app *application) addAttendeeToEvent(c *gin.Context) {
-	eventId, err := strconv.Atoi(c.Param("id"))
+	eventId, err := strconv.Atoi(c.Param("eventId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid event ID"})
 		return
 	}
 
-	userId, err := strconv.Atoi(c.Param("id"))
+	userId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
@@ -138,7 +138,7 @@ func (app *application) addAttendeeToEvent(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user ID"})
 		return
 	}
-
+	// this is the unnecessary nil check
 	if userToAdd == nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 	}
@@ -185,4 +185,42 @@ func (app *application) getAttendeesForEvent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, users)
+}
+
+func (app *application) deleteAttendeeFromEvent(c *gin.Context) {
+	eventId, err := strconv.Atoi(c.Param("eventId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid event ID"})
+		return
+	}
+
+	userId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	err = app.models.Attendees.Delete(userId, eventId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete attendee"})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
+}
+
+func (app *application) getEventsByAttendee(c *gin.Context) {
+	attendeeId, err := strconv.Atoi(c.Param("attendeeId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid attendee ID"})
+		return
+	}
+
+	events, err := app.models.Attendees.GetEventsByAttendee(attendeeId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve events"})
+		return
+	}
+
+	c.JSON(http.StatusOK, events)
 }
