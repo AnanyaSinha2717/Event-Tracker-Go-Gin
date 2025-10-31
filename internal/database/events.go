@@ -65,6 +65,8 @@ func (m EventModel) GetAll() ([]*Event, error) {
 	return events, nil
 }
 
+
+
 // get
 func (m EventModel) Get(id int) (*Event, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -84,6 +86,8 @@ func (m EventModel) Get(id int) (*Event, error) {
 
 	return &event, nil
 }
+
+
 
 // update
 func (m EventModel) Update(event *Event) error {

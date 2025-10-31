@@ -11,7 +11,7 @@ type AttendeeModel struct {
 }
 
 type Attendee struct {
-	Id      int `json:"Id"`
+	Id      int `json:"id"`
 	UserId  int `json:"userId"`
 	EventId int `json:"eventId"`
 }
@@ -20,9 +20,9 @@ func (m AttendeeModel) Insert(attendee *Attendee) (*Attendee, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := "INSERT INTO attendees(user_id, event_id) VALUES ($1, $2) RETURNING id"
+	query := "INSERT INTO attendees(event_id, user_id) VALUES ($1, $2) RETURNING id"
 
-	err := m.DB.QueryRowContext(ctx, query, attendee.EventId, attendee.UserId).Scan(&attendee.Id, &attendee.UserId, &attendee.EventId)
+	err := m.DB.QueryRowContext(ctx, query, attendee.EventId, attendee.UserId).Scan(&attendee.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (m AttendeeModel) GetByEventAndAttendee(eventId, userId int) (*Attendee, er
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := "SELECT * FROM attendees WHERE event_Id = $1 AND userId = $2"
+	query := "SELECT * FROM attendees WHERE event_Id = $1 AND user_id = $2"
 	var attendee Attendee
 	err := m.DB.QueryRowContext(ctx, query, eventId, userId).Scan(&attendee.Id, &attendee.UserId, &attendee.EventId)
 	if err != nil {
@@ -48,17 +48,20 @@ func (m AttendeeModel) GetByEventAndAttendee(eventId, userId int) (*Attendee, er
 	return &attendee, nil
 }
 
+
+
 func (m AttendeeModel) GetAttendeesByEvent(eventId int) ([]*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	query := `
-	SELECT u.id, u.name, u.email
+	SELECT u.id, u.email, u.name
 	FROM users u
 	JOIN attendees a ON u.id = a.user_id
-	where a.event_id = $1`
+	where a.event_id = $1
+	`
 
-	rows, err := m.DB.QueryContext(ctx, query)
+	rows, err := m.DB.QueryContext(ctx, query, eventId)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +71,7 @@ func (m AttendeeModel) GetAttendeesByEvent(eventId int) ([]*User, error) {
 
 	for rows.Next() {
 		var user User
-		err := rows.Scan(&user.Id, &user.Name, &user.Email)
+		err := rows.Scan(&user.Id, &user.Email, &user.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -77,6 +80,8 @@ func (m AttendeeModel) GetAttendeesByEvent(eventId int) ([]*User, error) {
 
 	return users, nil
 }
+
+
 
 func (m AttendeeModel) Delete(eventId, userId int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -100,9 +105,10 @@ func (m AttendeeModel) GetEventsByAttendee(attendeeId int) ([]*Event, error) {
 	SELECT e.id, e.owner_id, e.name, e.description, e.date, e.location, e.type
 	FROM events e
 	JOIN attendees a ON e.id = a.event_id
-	where a.user_id = $1`
+	where a.user_id = $1
+	`
 
-	rows, err := m.DB.QueryContext(ctx, query)
+	rows, err := m.DB.QueryContext(ctx, query, attendeeId)
 	if err != nil {
 		return nil, err
 	}
