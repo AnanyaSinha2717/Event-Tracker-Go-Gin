@@ -11,7 +11,7 @@ import (
 
 type application struct {
 	port   int
-	secret string
+	jwtSecret string
 	models database.Models
 }
 
@@ -28,7 +28,7 @@ func main() {
 
 	app := &application{
 		port:   env.GetEnvInt("LOCALHOST:", 8080),
-		secret: env.GetenvString("secret", "yolo"),
+		jwtSecret: env.GetenvString("JWT_SECRET", "This is a JWT secret"),
 		models: m,
 	}
 
