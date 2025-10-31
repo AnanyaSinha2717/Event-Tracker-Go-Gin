@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	_ "Event-Tracker-Go-Gin/docs"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
 	"log"

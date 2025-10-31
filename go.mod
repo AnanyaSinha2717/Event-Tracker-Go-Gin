@@ -1,4 +1,4 @@
-module rest-api-in-gin
+module event-tracker-go-gin
 
 go 1.23.3
 
