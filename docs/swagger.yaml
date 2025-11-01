@@ -1,0 +1,56 @@
+definitions:
+  database.Event:
+    properties:
+      date:
+        type: string
+      description:
+        minLength: 10
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      name:
+        minLength: 3
+        type: string
+      ownerId:
+        type: integer
+      type:
+        type: string
+    required:
+    - date
+    - description
+    - location
+    - name
+    - type
+    type: object
+info:
+  contact: {}
+  description: A rest API in Go using Gin framework to make an Event Tracker
+  title: Go Gin Rest API
+  version: "1.0"
+paths:
+  /api/v1/events:
+    get:
+      consumes:
+      - application/json
+      description: Return all events
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Event'
+            type: array
+      summary: Return all events
+      tags:
+      - Event
+securityDefinitions:
+  BearerAuth:
+    description: Enter your bearer token in the format **Bearer &lt;token&gt;**
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
