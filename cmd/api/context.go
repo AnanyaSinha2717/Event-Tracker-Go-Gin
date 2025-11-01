@@ -1,8 +1,7 @@
 package main
 
 import (
-	"rest-api-in-gin/internal/database"
-
+	"event-tracker-go-gin/internal/database"
 	"github.com/gin-gonic/gin"
 )
 

@@ -2,18 +2,26 @@ package main
 
 import (
 	"database/sql"
-	_ "Event-Tracker-Go-Gin/docs"
+	_ "event-tracker-go-gin/docs"
+	"event-tracker-go-gin/internal/database"
+	"event-tracker-go-gin/internal/env"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"rest-api-in-gin/internal/database"
-	"rest-api-in-gin/internal/env"
 )
 
+// @title Go Gin Rest API
+// @version 1.0
+// @description A rest API in Go using Gin framework to make an Event Tracker
+// @securityDefinitions.apikey BearerAuth
+// @in header
+//@name Authorization
+// @description Enter your bearer token in the format **Bearer &lt;token&gt;**
+
 type application struct {
-	port   int
+	port      int
 	jwtSecret string
-	models database.Models
+	models    database.Models
 }
 
 func main() {
@@ -28,9 +36,9 @@ func main() {
 	m := database.NewModels(db)
 
 	app := &application{
-		port:   env.GetEnvInt("LOCALHOST:", 8080),
+		port:      env.GetEnvInt("LOCALHOST:", 8080),
 		jwtSecret: env.GetenvString("JWT_SECRET", "This is a JWT secret"),
-		models: m,
+		models:    m,
 	}
 
 	if err := serve(app); err != nil {

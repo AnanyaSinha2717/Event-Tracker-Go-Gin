@@ -1,11 +1,10 @@
 package main
 
 import (
-	"net/http"
-	"rest-api-in-gin/internal/database"
-	"strconv"
-
+	"event-tracker-go-gin/internal/database"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 )
 
 // create event
@@ -30,7 +29,15 @@ func (app *application) createEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, event)
 }
 
-// get all events
+// getEvents return all events
+//
+// @Summary Return all events
+// @Description Return all events
+// @Tags Event
+// @Accept json
+// @Produce json
+// @Success 200 {object} []database.Event
+// @Router /api/v1/events [get]
 func (app *application) getAllEvents(c *gin.Context) {
 	events, err := app.models.Events.GetAll()
 	if err != nil {

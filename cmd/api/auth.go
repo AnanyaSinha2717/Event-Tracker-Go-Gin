@@ -1,13 +1,12 @@
 package main
 
 import (
-	"net/http"
-	"rest-api-in-gin/internal/database"
-	"time"
-
+	"event-tracker-go-gin/internal/database"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"time"
 )
 
 type registerRequest struct {
